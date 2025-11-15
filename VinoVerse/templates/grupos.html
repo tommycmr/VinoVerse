@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/grupo.css">
+    <title>Inicio - Publicaciones</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+<!-- Contenido principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+    
+    <!-- Sección central -->
+    <div class="contenedores central">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- Formulario para crear un nuevo grupo -->
+        <section class="publicacion">
+            <h2>Crear un nuevo grupo</h2>
+            <form action="/grupos" method="POST" enctype="multipart/form-data">
+                <input type="text" name="nombre" placeholder="Nombre del grupo" required>
+                <textarea name="descripcion" placeholder="Descripción del grupo" required></textarea>
+                <input type="file" name="foto">
+                <button type="submit" name="crear_grupo">Crear Grupo</button>
+            </form>
+        </section>
+
+        <!-- Formulario de búsqueda de grupos -->
+        <section class="publicacion">
+            <h2>Buscar Grupos</h2>
+            <form action="/buscar_grupos" method="GET" class="search-group-form">
+                <input type="text" name="query" placeholder="Buscar grupos" required>
+                <button type="submit">Buscar</button>
+            </form>
+        </section>
+
+        <!-- Mostrar resultados de búsqueda si existen -->
+        {% if resultados_busqueda %}
+            <section class="publicacion">
+                <h3>Resultados de búsqueda para "{{ query }}"</h3>
+                <div class="grupos">
+                    {% for grupo in resultados_busqueda %}
+                        <div class="grupo-card">
+                            <img src="{{ url_for('static', filename='image/' + grupo[3]) }}" alt="Imagen de perfil de {{ grupo[1] }}" class="img-fluid">
+                            <h4>{{ grupo[1] }}</h4>
+                            <p>{{ grupo[2] }}</p>
+                            <a href="/grupo/{{ grupo[0] }}" class="btn-ver-grupo">Ver Grupo</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% else %}
+            <p>No se encontraron resultados de búsqueda.</p>
+        {% endif %}
+
+        <!-- Sección de mis grupos (creados por el usuario) -->
+        <section class="publicacion">
+            <h2>Mis Grupos</h2>
+            {% if mis_grupos %}
+                <h3>Grupos creados por ti:</h3>
+                <div class="grupos">
+                    {% for grupo in mis_grupos %}
+                        <div class="grupo-card">
+                            <img src="{{ url_for('static', filename='image/' + grupo[3]) }}" alt="Imagen de perfil de {{ grupo[1] }}" class="img-fluid">
+                            <h4>{{ grupo[1] }}</h4>
+                            <p>{{ grupo[2] }}</p>
+                            <a href="/grupo/{{ grupo[0] }}" class="btn-ver-grupo">Ver Grupo</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No has creado ningún grupo.</p>
+            {% endif %}
+
+            <!-- Sección de grupos a los que el usuario se ha unido -->
+            {% if grupos_unidos %}
+                <h3>Grupos a los que te has unido:</h3>
+                <div class="grupos">
+                    {% for grupo in grupos_unidos %}
+                        <div class="grupo-card">
+                            <img src="{{ url_for('static', filename='image/' + grupo[3]) }}" alt="Imagen de perfil de {{ grupo[1] }}" class="img-fluid">
+                            <h4>{{ grupo[1] }}</h4>
+                            <p>{{ grupo[2] }}</p>
+                            <a href="/grupo/{{ grupo[0] }}" class="btn-ver-grupo">Ver Grupo</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No te has unido a ningún grupo.</p>
+            {% endif %}
+        </section>
+    </div>
+
+        <!-- Sidebar derecho -->
+        <aside class="contenedores derecho">
+            <div class="relleno-derecho">
+                <a href="https://fronterawines.com/nuestros-vinos/">
+                    <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+                </a>
+                <a href="https://bodegagiol.com">
+                    <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+                </a>
+            </div>
+        </aside>
+        
+    </div>
+    <script>
+        // Oculta el loader y muestra el contenido al cargar la página
+        window.addEventListener('load', function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

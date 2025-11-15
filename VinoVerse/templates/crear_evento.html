@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/crear.css">
+    <title>Crear Evento</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+<!-- Contenido principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+    
+
+    <!-- Sección central -->
+    <div class="contenedores central">
+        <h2>Crear Evento</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form action="/crear_evento" method="POST" enctype="multipart/form-data">
+            <label for="nombre">Nombre del evento</label>
+            <input type="text" name="nombre" id="nombre" required>
+
+            <label for="fecha">Fecha del evento</label>
+            <input type="date" name="fecha" id="fecha" required>
+
+            <label for="ubicacion_corta">Ubicación corta</label>
+            <input type="text" name="ubicacion_corta" id="ubicacion_corta" required>
+
+            <label for="ubicacion_completa">Link de la ubicación (Google Maps)</label>
+            <input type="text" name="ubicacion_completa" id="ubicacion_completa" placeholder="https://www.google.com/maps?q=latitud,longitud" required>
+
+            <!-- Leve descripción -->
+            <label for="leve_descripcion">Leve descripción</label>
+            <textarea name="leve_descripcion" id="leve_descripcion" rows="3" placeholder="Breve descripción del evento" required maxlength="255"></textarea>
+
+            <label for="descripcion_detallada">Descripción detallada</label>
+            <textarea name="descripcion_detallada" id="descripcion_detallada" rows="5" required></textarea>
+
+            <label for="duracion">Duración (en horas)</label>
+            <input type="number" name="duracion" id="duracion" required min="1">
+
+            <label for="precio">Precio (0 si es gratis)</label>
+            <input type="number" name="precio" id="precio" required min="0">
+
+            <label for="imagen">Imagen del evento</label>
+            <input type="file" name="imagen" id="imagen" accept="image/jpeg, image/png">
+
+            <button type="submit">Crear Evento</button>
+        </form>
+    </div>
+
+        <!-- Sidebar derecho -->
+        <aside class="contenedores derecho">
+            <div class="relleno-derecho">
+                <a href="https://fronterawines.com/nuestros-vinos/">
+                    <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+                </a>
+                <a href="https://bodegagiol.com">
+                    <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+                </a>
+            </div>
+        </aside>
+        
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

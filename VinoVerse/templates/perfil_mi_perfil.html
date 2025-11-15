@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - {{ usuario.nombre }} {{ usuario.apellido }}</title>
+    <link rel="stylesheet" href="/static/style/css/perfil_layout.css">
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+    <div class="contenedor">
+        <!-- Sidebar izquierdo -->
+        <aside class="izquierdo">
+            <div class="relleno">
+                <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+                <p><strong>Email:</strong> {{ usuario.email }}</p>
+                <p><strong>Fecha de Registro:</strong> {{ usuario.fecha_registro }}</p>
+            </div>
+            <div class="relleno">
+                <p><strong>Biografía:</strong> {{ perfil.biografia }}</p>
+            </div>
+            <div class="relleno">
+                <button class="boton-editar-perfil">Editar Perfil</button>
+            </div>
+        </aside>
+
+        <!-- Contenedor central para publicaciones -->
+        <div class="central">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+            <div class="nueva_publicacion">
+                <form action="/add" method="POST" enctype="multipart/form-data">
+                    <input type="text" name="titulo_agregado" placeholder="Define un título" required>
+                    <input class="segundo" type="text" name="Contenido_agregado" placeholder="Agrega un comentario" required>
+                    <input type="file" name="imagen" accept="image/*">
+                    <button type="submit">Publicar</button>
+                </form>
+            </div>
+
+            <!-- Sección de publicaciones -->
+            {% if publicaciones %}
+                {% for publicacion in publicaciones %}
+                <section class="publicacion">
+                    <div class="cabecera">
+                        <h1>{{ publicacion.titulo }}</h1>
+                        <p class="fecha">Publicación realizada {{ publicacion.fecha_publicacion }}</p>
+                    </div>
+                    <p>{{ publicacion.contenido }}</p>
+                    
+                    <!-- Verificar si existe una imagen asociada a la publicación -->
+                    {% if publicacion.nombre_archivo %}
+                        <div class="imagen-publicacion">
+                            <img src="{{ url_for('static', filename='image/' + publicacion.nombre_archivo) }}" alt="Imagen de la publicación">
+                        </div>
+                    {% endif %}
+                    
+                    <div class="acciones">
+                        <a href="/editar/{{ publicacion.id }}" class="boton-editar">Editar</a>
+                        <a href="/eliminar/{{ publicacion.id }}" class="boton-eliminar" onclick="return confirm('¿Estás seguro de eliminar esta publicación?');">Eliminar</a>
+                        
+                        <!-- Botón de Guardar o Guardado -->
+                        <form method="POST" action="{{ url_for('guardar_publicacion') }}">
+                            <input type="hidden" name="publicacion_id" value="{{ publicacion.id }}">
+                            {% if publicacion.guardada %}
+                                <button type="submit" class="boton-guardado" disabled>Guardado</button>
+                            {% else %}
+                                <button type="submit" class="boton-guardar">Guardar</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </section>
+                {% endfor %}
+            {% else %}
+                <section class="publicacion">
+                    <h1>No hay publicaciones recientes</h1>
+                    <p>Aún no has realizado ninguna publicación.</p>
+                </section>
+            {% endif %}
+        </div>
+
+           <!-- Sidebar derecho -->
+    <aside class="contenedores derecho">
+        <div class="relleno-derecho">
+            <a href="https://fronterawines.com/nuestros-vinos/">
+                <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+            </a>
+            <a href="https://bodegagiol.com">
+                <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+            </a>
+        </div>
+    </aside>
+    
+</div>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</body>
+</html>

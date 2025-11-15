@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/register.css">
+    <title>Registrarse</title>
+
+    <script>
+        // Función que se ejecuta cuando el tipo de cuenta cambia
+        function toggleTipoEmpresa() {
+            var tipoCuenta = document.getElementById("tipo_cuenta").value;
+            var tipoEmpresaSection = document.getElementById("tipo_empresa_section");
+
+            // Mostrar el selector de tipo de empresa solo si se selecciona "Cuenta de Empresa"
+            if (tipoCuenta === "empresa") {
+                tipoEmpresaSection.style.display = "block";
+            } else {
+                tipoEmpresaSection.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+    <div class="background-image"></div>
+    <form class="form" action="/register" method="POST">
+        <h2 class="title">Registrarse</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-messages">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Nombre -->
+        <div class="flex-column">
+            <label for="nombre">Nombre</label>
+            <div class="inputForm">
+                <input placeholder="Ingrese su nombre" class="input" type="text" id="nombre" name="nombre" required/>
+            </div>
+        </div>
+
+        <!-- Apellido -->
+        <div class="flex-column">
+            <label for="apellido">Apellido</label>
+            <div class="inputForm">
+                <input placeholder="Ingrese su apellido" class="input" type="text" id="apellido" name="apellido" required/>
+            </div>
+        </div>
+
+        <!-- Correo -->
+        <div class="flex-column">
+            <label for="email">Correo</label>
+            <div class="inputForm">
+                <input placeholder="Ingrese su correo" class="input" type="email" id="email" name="email" required/>
+            </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="flex-column">
+            <label for="contraseña">Contraseña</label>
+            <div class="inputForm">
+                <input placeholder="Ingrese su contraseña" class="input" type="password" id="contraseña" name="contraseña" required/>
+            </div>
+        </div>
+
+        <!-- Repetir Contraseña -->
+        <div class="flex-column">
+            <label for="confirm_password">Repetir Contraseña</label>
+            <div class="inputForm">
+                <input placeholder="Vuelva a escribir la contraseña" class="input" type="password" id="confirm_password" name="confirm_password" required />
+            </div>
+        </div>
+
+        <!-- Tipo de Cuenta -->
+        <div class="flex-column">
+            <label for="tipo_cuenta">Tipo de Cuenta:</label>
+            <div class="inputForm">
+                <select id="tipo_cuenta" name="tipo_cuenta" required class="input" onchange="toggleTipoEmpresa()">
+                    <option value="individual">Cuenta Individual</option>
+                    <option value="empresa">Cuenta de Empresa</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tipo de Empresa (solo visible si "Cuenta de Empresa" está seleccionada) -->
+        <div id="tipo_empresa_section" style="display: none;">
+            <div class="flex-column">
+                <label for="tipo_empresa">Tipo de Empresa:</label>
+                <div class="inputForm">
+                    <select id="tipo_empresa" name="tipo_empresa" class="input" required>
+                        <option value="bodega">Bodega</option>
+                        <option value="hotel">Hotel</option>
+                        <option value="transporte">Transporte</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de envío -->
+        <button class="button-submit">Registrarse</button>
+        
+        <p class="p">¿Ya tienes una cuenta? <a href="/login" class="span">Iniciar sesión</a></p>
+    </form>
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

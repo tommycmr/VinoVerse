@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paquetes Turísticos de Enología</title>
+    <link rel="stylesheet" href="../static/style/css/paquetes.css">
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+    <!-- Sección de Paquetes -->
+    <main class="paquetes">
+        <h1>Paquetes Turísticos de Enología</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="paquetes-container">
+            {% for paquete in paquetes %}
+                <div class="paquete-card">
+                    <!-- Mostrar la imagen del paquete -->
+                    <img src="{{ url_for('static', filename='image/' + paquete['imagen']) }}" alt="Imagen de {{ paquete['nombre'] }}" class="paquete-img">
+                    <h2>{{ paquete['nombre'] }}</h2>
+                    <p>{{ paquete['descripcion'] }}</p>
+                    <p><strong>Precio:</strong> ${{ paquete['precio'] }}</p>
+        
+                    <!-- Información de la bodega con descripción y ubicación -->
+                    <div class="bodega-info">
+                        <strong>Bodega:</strong> {{ paquete['bodega'] }}<br>
+                        <strong>Descripción:</strong> {{ paquete['bodega_desc'] }}<br>
+                        <strong>Ubicación:</strong> {{ paquete['bodega_ubicacion'] }}
+                    </div>
+        
+                    <p><strong>Transporte:</strong> {{ paquete['transporte'] or 'No disponible' }}</p>
+                    <p><strong>Hotel:</strong> {{ paquete['hotel'] or 'No disponible' }}</p>
+        
+                    <button class="paquete-btn" onclick="toggleReservationForm({{ paquete['id'] }})">Reservar</button>
+        
+                    <!-- Formulario de reserva oculto -->
+                    <div id="reservation-form-{{ paquete['id'] }}" class="reservation-form">
+                        <form action="/reservar" method="POST">
+                            <input type="hidden" name="paquete_id" value="{{ paquete['id'] }}">
+        
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" required>
+        
+                            <label for="email">Correo electrónico:</label>
+                            <input type="email" id="email" name="email" required>
+        
+                            <label for="fecha">Fecha de la reserva:</label>
+                            <input type="date" id="fecha" name="fecha" required>
+        
+                            <label for="personas">Número de personas:</label>
+                            <input type="number" id="personas" name="personas" min="1" required>
+        
+                            <button type="submit">Confirmar Reserva</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </main>
+
+    <script>
+        // Función para mostrar y ocultar el formulario de reserva
+        function toggleReservationForm(paqueteId) {
+            const form = document.getElementById('reservation-form-' + paqueteId);
+            form.classList.toggle('active'); // Alternar clase para mostrar u ocultar
+        }
+
+        // Validación de número de personas
+        function validateForm() {
+            const personas = document.getElementById('personas').value;
+            if (personas <= 0) {
+                alert('El número de personas debe ser mayor que 0.');
+                return false; // Evitar el envío del formulario
+            }
+            return true;
+        }
+    </script>
+
+    <style>
+        .reservation-form {
+            display: none;
+        }
+
+        .reservation-form.active {
+            display: block;
+        }
+    </style>
+        <script>
+            window.addEventListener('load', function() {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            });
+        </script>
+</body>
+</html>

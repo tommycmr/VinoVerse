@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/presentacion_princ.css">
+    <title>Presentación</title>
+</head>
+
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+
+    <div class="header-buttons">
+        <a href="{{ url_for('login') }}" class="boton">Logearse</a>
+        <a href="{{ url_for('register') }}" class="boton">Registrarse</a>
+    </div>
+
+    <div class="content-container">
+        <div class="mundo"></div>
+
+        <div class="center-container">
+            <div class="loader">
+                <span class="border-text">VinoVerse</span>
+                <span class="animated-text">VinoVerse</span>
+            </div>
+
+            <footer class="button" data-text="Awesome">
+                <span class="actual-text">&nbsp;&nbsp;</span>
+                <span aria-hidden="true" class="hover-text">&nbsp;un mundo por conocer&nbsp;</span>
+            </footer>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

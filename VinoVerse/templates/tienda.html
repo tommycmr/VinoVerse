@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/tienda.css">
+    <title>Tienda - Productos</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <!-- Buscador de perfiles -->
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar perfil" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+
+    <!-- Nuevo buscador de productos -->
+    <form action="/buscar_producto" method="GET" class="search-form-productos">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar producto" required>
+        <button type="submit" class="search-button">Buscar Producto</button>
+    </form>
+
+    <!-- Botón de Carrito, entre Buscar Producto y Logout -->
+    <button class="carrito-btn" onclick="toggleCarrito()">Carrito</button>
+
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+<!-- Mostrar mensajes flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- Carrito Desplegable -->
+<div class="carrito-dropdown" id="carritoDropdown">
+    <div class="carrito-contenido">
+        <h3>Productos en el carrito</h3>
+        <div id="carritoLista">
+            <!-- Aquí se actualizarán los productos del carrito dinámicamente -->
+        </div>
+        <p>Total: <span id="totalCarrito">$0</span></p>
+        <a href="/facturacion" class="boton-comprar">Comprar</a>
+    </div>
+</div>
+
+<!-- Contenedor principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+
+    <!-- Sección central -->
+    <div class="contenedores central">
+        <h1>Tienda - Productos
+            <!-- Botón de Subir Producto al lado del título -->
+            <a href="/subir_producto" class="boton-subir">Subir Producto</a>
+        </h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- Verificación de productos -->
+        {% if productos %}
+            <p>Productos encontrados: {{ productos | length }}</p>
+            <div class="productos">
+                {% for producto in productos %}
+                <div class="producto">
+                    <img src="{{ url_for('static', filename='image/' + producto.imagen) }}" alt="{{ producto.nombre }}" class="producto-imagen">
+                    <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+                    <p class="producto-descripcion">{{ producto.descripcion }}</p>
+                    <p class="producto-precio">$ {{ producto.precio }}</p>
+                    <form class="form-agregar" data-id="{{ producto.id }}">
+                        <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                        <label for="cantidad">Cantidad:</label>
+                        <input type="number" name="cantidad" min="1" value="1" required>
+                        <button type="submit" class="boton-agregar">Añadir al carrito</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <section class="producto">
+                <h1>No hay productos disponibles</h1>
+                <p>Actualmente no hay productos para mostrar.</p>
+            </section>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar derecho -->
+    <aside class="contenedores derecho">
+        <div class="relleno-derecho">
+            <a href="https://fronterawines.com/nuestros-vinos/">
+                <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+            </a>
+            <a href="https://bodegagiol.com">
+                <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+            </a>
+        </div>
+    </aside>
+
+<script>
+    // Función para mostrar/ocultar el carrito desplegable
+    function toggleCarrito() {
+        var carrito = document.getElementById('carritoDropdown');
+        carrito.classList.toggle('activo');
+    }
+
+    // Actualizar el carrito en la interfaz
+    // Actualizar el carrito en la interfaz
+function actualizarCarrito(carrito, total) {
+    const carritoLista = document.getElementById('carritoLista');
+    const totalCarrito = document.getElementById('totalCarrito');
+    carritoLista.innerHTML = ''; // Limpiar la lista del carrito
+
+    // Mostrar los productos del carrito
+    if (carrito.length > 0) {
+        carrito.forEach(item => {
+            const divItem = document.createElement('div');
+            divItem.classList.add('carrito-item');
+            divItem.innerHTML = `
+                <img src="/static/image/${item.imagen}" alt="${item.nombre}" class="carrito-item-imagen">
+                <p>${item.nombre}  </p>
+                <p>Cantidad: ${item.cantidad} </p>
+                <p>Subtotal: $${item.cantidad * item.precio} </p>
+                <button onclick=removerDelCarrito(${item.id}) ">Eliminar</button>
+            `;
+            carritoLista.appendChild(divItem);
+        });
+        totalCarrito.textContent = '$' + total; // Actualiza el total
+    } else {
+        carritoLista.innerHTML = '<p>No hay productos en el carrito.</p>';
+        totalCarrito.textContent = '$0'; // Si el carrito está vacío, el total será 0
+    }
+}
+
+
+    // Función para añadir productos al carrito
+    document.querySelectorAll('.form-agregar').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar el comportamiento por defecto del formulario
+            const formData = new FormData(form);
+            fetch('/añadir_carrito', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                actualizarCarrito(data.carrito, data.total); // Actualizar el carrito después de agregar un producto
+            })
+            .catch(error => console.error('Error al añadir al carrito:', error));
+        });
+    });
+
+    function removerDelCarrito(productoId) {
+    fetch(`/remover_carrito/${productoId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ producto_id: productoId }) // Pasamos el id del producto para eliminarlo
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar el carrito con los productos y el total
+            actualizarCarrito(data.carrito, data.total); // Asegúrate de que estos datos estén bien formateados en el backend
+        } else {
+            alert('Error al eliminar el producto.');
+        }
+    })
+    .catch(error => console.error('Error al eliminar el producto:', error));
+}
+
+        window.addEventListener('load', function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+ 
+
+</script>
+
+
+
+</body>
+</html>

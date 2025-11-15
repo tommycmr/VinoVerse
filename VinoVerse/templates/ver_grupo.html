@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/ver_grupo.css">
+    <title>Grupo - {{ grupo['nombre'] }}</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+<!-- Contenido principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+    
+    <!-- Sección central -->
+    <section class="contenedores central">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="detalle-grupo">
+            <h2>{{ grupo['nombre'] }}</h2>
+
+            <!-- Foto del grupo -->
+            <div class="foto-grupo">
+                {% if grupo.get('foto_perfil') %}
+                    <img src="{{ url_for('static', filename='image/' + grupo['foto_perfil']) }}" alt="Imagen de {{ grupo['nombre'] }}" class="img-fluid">
+                {% else %}
+                    <img src="{{ url_for('static', filename='image/default.jpg') }}" alt="Imagen por defecto" class="img-fluid">
+                {% endif %}
+            </div>
+
+          <!-- Información del grupo -->
+<div class="info-grupo">
+    <p><strong>Descripción:</strong> {{ grupo['descripcion'] }}</p>
+    <p><strong>Creador:</strong> {{ creador['nombre'] }} {{ creador['apellido'] }}</p>
+    <p><strong>Fecha de creación:</strong> {{ grupo['fecha_creacion'].strftime('%d/%m/%Y') }}</p>
+</div>
+
+
+<!-- Botones según si eres miembro o dueño del grupo -->
+{% if es_dueño %}
+    <!-- Botón para eliminar el grupo si eres el creador -->
+    <form action="{{ url_for('eliminar_grupo', grupo_id=grupo['id']) }}" method="POST">
+        <button type="submit" class="btn-eliminar">Eliminar grupo</button>
+    </form>
+
+    <form action="{{ url_for('ver_chat', grupo_id=grupo['id']) }}" method="GET">
+        <button type="submit" class="btn-ver-chat">Ver Chat</button>
+    </form>
+{% elif es_miembro %}
+    <!-- Botón para ver el chat si eres miembro -->
+    <form action="{{ url_for('ver_chat', grupo_id=grupo['id']) }}" method="GET">
+        <button type="submit" class="btn-ver-chat">Ver Chat</button>
+    </form>
+
+    <!-- Botón para salir del grupo si eres miembro -->
+    <form action="{{ url_for('salir_grupo', grupo_id=grupo['id']) }}" method="POST">
+        <button type="submit" class="btn-salir">Salir del grupo</button>
+    </form>
+{% else %}
+    <!-- Botón para unirse al grupo si no eres miembro -->
+    <form action="{{ url_for('unirse_grupo', grupo_id=grupo['id']) }}" method="POST">
+        <button type="submit" class="btn-unirse">Unirse al grupo</button>
+    </form>
+{% endif %}
+
+            
+        </div>
+
+        <!-- Miembros del grupo (sin el botón de miembros) -->
+        <div class="miembros-grupo">
+            <h3>Miembros del grupo:</h3>
+            <ul>
+                {% for miembro in miembros %}
+                    <li>{{ miembro['nombre'] }} {{ miembro['apellido'] }} - {{ miembro['email'] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+        <!-- Sidebar derecho -->
+        <aside class="contenedores derecho">
+            <div class="relleno-derecho">
+                <a href="https://fronterawines.com/nuestros-vinos/">
+                    <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+                </a>
+                <a href="https://bodegagiol.com">
+                    <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+                </a>
+            </div>
+        </aside>
+        
+    </div>
+
+</body>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/perfil_layout.css">
+    <title>Perfil de la Empresa {{ usuario.nombre }}</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+<div class="contenedor">
+    <aside class="contenedores izquierdo">
+        <div class="caja-principal">
+            <div class="relleno">
+                <h2>{{ usuario.nombre }}</h2>
+                <p><strong>Email:</strong> {{ usuario.email }}</p>
+                <p><strong>Fecha de Registro:</strong> {{ usuario.fecha_registro }}</p>
+            </div>
+            <div class="relleno 2">
+                <p><strong>Descripción de la Empresa:</strong> {{ perfil.descripcion }}</p>
+            </div>
+            <div class="relleno 3">
+                {% if es_mi_perfil %}
+                    <p>No puedes añadirte como amigo.</p>
+                {% else %}
+                    {% if relacion_estado == 'amigo' %}
+                    <form action="/dejar_de_seguir/{{ usuario.id }}" method="POST">
+                        <button type="submit" class="seguir-boton">Dejar de seguir</button>
+                    </form>
+    
+                    {% else %}
+                        <form action="/enviar_solicitud_amigo/{{ usuario.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="boton-amigo">Seguir</button>
+                        </form>
+                    {% endif %}
+                    <form action="/chat/{{ usuario.id }}" method="GET" style="display:inline;">
+                        <button type="submit" class="boton-mensaje">Enviar mensaje</button>
+                
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <div class="contenedores central">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        
+        <h2>Publicaciones de la Empresa</h2>
+        {% if publicaciones %}
+            {% for publicacion in publicaciones %}
+            <section class="publicacion">
+                <div class="cabecera">
+                    <h1 class="indice">{{ publicacion.titulo }}</h1>
+                    <p class="fecha">Publicación realizada {{ publicacion.fecha_publicacion }}</p>
+                </div>
+                <p>{{ publicacion.contenido }}</p>
+                
+                <!-- Mostrar imagen si la publicación tiene una -->
+                {% if publicacion.nombre_archivo %}
+                <div class="imagen-publicacion">
+                    <img src="{{ url_for('static', filename='image/' + publicacion.nombre_archivo) }}" alt="Imagen de la publicación" class="imagen-publicacion">
+                </div>
+                {% endif %}
+                <form method="POST" action="{{ url_for('guardar_publicacion') }}">
+                    <input type="hidden" name="publicacion_id" value="{{ publicacion.id }}">
+                    {% if publicacion.guardada %}
+                        <button type="submit" class="boton-guardado" disabled>Guardado</button>
+                    {% else %}
+                        <button type="submit" class="boton-guardar">Guardar</button>
+                    {% endif %}
+                </form>
+            </section>
+            {% endfor %}
+        {% else %}
+            <section class="publicacion">
+                <h1>No hay publicaciones recientes</h1>
+                <p>Esta empresa aún no ha realizado ninguna publicación.</p>
+            </section>
+        {% endif %}
+    </div>
+
+        <!-- Sidebar derecho -->
+        <aside class="contenedores derecho">
+            <div class="relleno-derecho">
+                <a href="https://fronterawines.com/nuestros-vinos/">
+                    <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+                </a>
+                <a href="https://bodegagiol.com">
+                    <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+                </a>
+            </div>
+        </aside>
+        
+    </div>
+    </aside>
+</div>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/inicio.css">
+    <title>Detalles del Evento</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+
+<!-- Contenido principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+    
+
+    <!-- Sección central -->
+    <div class="contenedores central">
+        <!-- Imagen del evento -->
+        {% if evento.imagen %}
+            <img src="{{ url_for('static', filename='image/' + evento.imagen) }}" alt="Imagen de {{ evento.nombre }}" class="imagen-evento-detalle">
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+        <h2>{{ evento.nombre }}</h2>
+        <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+        <p><strong>Duración:</strong> {{ evento.duracion | round(0) }} horas</p>
+        <p><strong>Precio:</strong> {{ 'Gratis' if evento.precio == 0 else evento.precio }}</p>
+        <p><strong>Descripción:</strong> {{ evento.descripcion_detallada }}</p>
+        
+        <!-- Organizador del evento -->
+        <p><strong>Organizador:</strong> {{ evento['organizador_nombre'] }} {{ evento['organizador_apellido'] }}</p>
+
+        <!-- Mapa interactivo con el link de Google Maps -->
+        <div id="mapa">
+            {% if evento.ubicacion_completa %}
+                <!-- Verifica que la URL sea válida para un iframe -->
+                <iframe src="{{ evento.ubicacion_completa }}" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            {% else %}
+                <p>No hay información de ubicación disponible.</p>
+            {% endif %}
+        </div>
+    </div>
+
+       <!-- Sidebar derecho -->
+       <aside class="contenedores derecho">
+        <div class="relleno-derecho">
+            <a href="https://fronterawines.com/nuestros-vinos/">
+                <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+            </a>
+            <a href="https://bodegagiol.com">
+                <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+            </a>
+        </div>
+    </aside>
+    
+</div>
+<script>
+    // Oculta el loader y muestra el contenido al cargar la página
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</body>
+</html>

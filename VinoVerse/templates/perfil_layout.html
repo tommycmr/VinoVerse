@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/perfil_layout.css">
+    <title>Perfil de {{ usuario.nombre }} {{ usuario.apellido }}</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">VinoVerse</div>
+    <ul class="nav-links">
+        <li><a href="/inicio">Inicio</a></li>
+        <li><a href="/tienda">Shop</a></li>
+        <li><a href="/paquetes">Paquetes</a></li>
+        <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+    </ul>
+    <form action="/buscar" method="POST" class="search-form">
+        <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+    <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-button">Salir</button>
+    </form>
+</nav>
+    
+    <!-- Contenido principal -->
+    <div class="contenedor">
+        <!-- Sidebar izquierdo -->
+        <aside class="contenedores izquierdo">
+            <div class="caja-principal">
+                <div class="relleno">
+                    <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+                    <p><strong>Email:</strong> {{ usuario.email }}</p>
+                    <p><strong>Fecha de Registro:</strong> {{ usuario.fecha_registro }}</p>
+                </div>
+                <div class="relleno 2">
+                    <p><strong>Biografía:</strong> {{ perfil.biografia }}</p>
+                </div>
+                <div class="relleno 3">
+                    {% if es_mismo_usuario %}
+                        <!-- No mostrar botón de añadir amigo -->
+                        <p>No puedes añadirte como amigo.</p>
+                    {% elif es_empresa %}
+                        <!-- Botón de seguir si es una empresa -->
+                        <form action="/seguir/{{ usuario.id }}" method="POST">
+                            <button type="submit" class="seguir-boton">Seguir</button>
+                        </form>
+                    {% else %}
+                        <!-- Botón de añadir amigo -->
+                        {% if relacion_estado == 'amigos' %}
+                            <button class="boton-amigo">Ya son amigos</button>
+                        {% elif relacion_estado == 'pendiente' %}
+                            <button class="boton-amigo">Petición pendiente</button>
+                        {% else %}
+                            <form action="/añadir_amigo/{{ usuario.id }}" method="POST">
+                                <button type="submit" class="boton-amigo">Añadir amigo</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sección central -->
+        <div class="contenedores central">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            
+            {% if es_mismo_usuario %}
+                <div class="nueva_publicacion">
+                    <form action="/add" method="POST">
+                        <input type="text" name="titulo_agregado" placeholder="Define un título" required>
+                        <input class="segundo" type="text" name="Contenido_agregado" placeholder="Agrega un comentario" required>
+                        <button type="submit">Publicar</button>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- Lista de publicaciones -->
+            {% if publicaciones %}
+                {% for publicacion in publicaciones %}
+                <section class="publicacion">
+                    <div class="cabecera">
+                        <h1 class="indice">{{ publicacion.titulo }}</h1>
+                        <p class="fecha">Publicación realizada {{ publicacion.fecha_publicacion }}</p>
+                    </div>
+                    <p>{{ publicacion.contenido }}</p>
+                    <div class="acciones">
+                        {% if es_mismo_usuario %}
+                            <a href="/editar/{{ publicacion.id }}" class="boton-editar">Editar</a>
+                            <a href="/eliminar/{{ publicacion.id }}" class="boton-eliminar" onclick="return confirm('¿Estás seguro de eliminar esta publicación?');">Eliminar</a>
+                        {% endif %}
+                    </div>
+                </section>
+                {% endfor %}
+            {% else %}
+                <section class="publicacion">
+                    <h1>No hay publicaciones recientes</h1>
+                    <p>Aún no has realizado ninguna publicación.</p>
+                </section>
+            {% endif %}
+        </div>
+
+           <!-- Sidebar derecho -->
+    <aside class="contenedores derecho">
+        <div class="relleno-derecho">
+            <a href="https://fronterawines.com/nuestros-vinos/">
+                <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+            </a>
+            <a href="https://bodegagiol.com">
+                <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+            </a>
+        </div>
+    </aside>
+    
+</div>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</body>
+</html>

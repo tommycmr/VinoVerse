@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/css/inicio.css">
+    <title>Amigos - VinoVerse</title>
+</head>
+<body>
+    <div id="loader">
+        <div class="hourglassBackground">
+            <div class="hourglassContainer">
+              <div class="hourglassCurves"></div>
+              <div class="hourglassCapTop"></div>
+              <div class="hourglassGlassTop"></div>
+              <div class="hourglassSand"></div>
+              <div class="hourglassSandStream"></div>
+              <div class="hourglassCapBottom"></div>
+              <div class="hourglassGlass"></div>
+            </div>
+          </div>
+    </div>
+    
+    <div id="content" style="display: none;">
+
+    <nav class="navbar">
+        <div class="logo">VinoVerse</div>
+        <ul class="nav-links">
+            <li><a href="/inicio">Inicio</a></li>
+            <li><a href="/tienda">Shop</a></li>
+            <li><a href="/paquetes">Paquetes</a></li>
+            <li><a href="/mensajes">Mensajes</a></li> <!-- Botón de mensajes agregado -->
+        </ul>
+        <form action="/buscar" method="POST" class="search-form">
+            <input type="text" name="query" class="search-bar" placeholder="Buscar" required>
+            <button type="submit" class="search-button">Buscar</button>
+        </form>
+        <form action="/logout" method="POST" class="logout-form">
+            <button type="submit" class="logout-button">Salir</button>
+        </form>
+    </nav>
+
+<!-- Contenido principal -->
+<div class="contenedor">
+    <!-- Sidebar izquierdo -->
+    <aside class="contenedores izquierdo">
+        <ul>
+            <li><a href="/amigos/{{ user_id }}"><img src="{{ url_for('static', filename='image/amigos.png') }}" alt="Amigos"> Amigos</a></li>
+            <li><a href="/guardados/{{ user_id }}"><img src="{{ url_for('static', filename='image/guardado.png') }}" alt="Guardado"> Guardado</a></li>
+            <li><a href="/grupos"><img src="{{ url_for('static', filename='image/grupo.png') }}" alt="Grupos"> Grupos</a></li>
+            <li><a href="/eventos"><img src="{{ url_for('static', filename='image/eventos.png') }}" alt="Eventos"> Eventos</a></li>
+            <li><a href="/empresas/Bodega"><img src="{{ url_for('static', filename='image/bodega.png') }}" alt="Bodegas"> Bodegas</a></li>
+            <li><a href="/empresas/Hotel"><img src="{{ url_for('static', filename='image/hoteles.png') }}" alt="Hoteles"> Hoteles</a></li>
+            <li><a href="/empresas/Transporte"><img src="{{ url_for('static', filename='image/transporte.png') }}" alt="Transporte"> Transporte</a></li>
+        </ul>
+    </aside>
+
+    <!-- Sección central -->
+    <div class="contenedores central">
+        <h1>Lista de Amigos</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Solicitudes Pendientes</h2>
+        {% if solicitudes_pendientes %}
+            {% for amigo in solicitudes_pendientes %}
+                <section class="publicacion">
+                    <div class="cabecera">
+                        <h2>
+                            <a href="/perfil/{{ amigo[0] }}">{{ amigo[1] }} {{ amigo[2] }}</a>
+                        </h2>
+                        <form action="/amigos/{{ user_id }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="aceptar_amigo" value="{{ amigo[0] }}">
+                            <button type="submit" class="aceptar-button">Aceptar</button>
+                        </form>
+                        
+                        <form action="/amigos/{{ user_id }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="rechazar_amigo" value="{{ amigo[0] }}">
+                            <button type="submit" class="rechazar-button">Rechazar</button>
+                        </form>
+                    </div>
+                </section>
+            {% endfor %}
+        {% else %}
+            <section class="publicacion">
+                <h3>No tienes solicitudes pendientes.</h3>
+            </section>
+        {% endif %}
+
+        <h2>Mis Amigos</h2>
+        {% if amigos_confirmados %}
+            {% for amigo in amigos_confirmados %}
+                <section class="publicacion">
+                    <div class="cabecera">
+                        <h2><a href="/perfil/{{ amigo[0] }}">{{ amigo[1] }} {{ amigo[2] }}</a></h2>
+                    </div>
+                    <form action="/amigos/{{ user_id }}" method="POST">
+                        <input type="hidden" name="eliminar_amigo" value="{{ amigo[0] }}">
+                        <button type="submit" class="eliminar-button">Eliminar</button>
+                    </form>
+                </section>
+            {% endfor %}
+        {% else %}
+            <section class="publicacion">
+                <h1>No tienes amigos agregados.</h1>
+                <p>Aún no tienes amigos en tu lista.</p>
+            </section>
+        {% endif %}
+    </div>
+
+      <!-- Sidebar derecho -->
+      <aside class="contenedores derecho">
+        <div class="relleno-derecho">
+            <a href="https://fronterawines.com/nuestros-vinos/">
+                <img src="{{ url_for('static', filename='image/publi1.jpg') }}" alt="Imagen 1" class="imagen-clickeable">
+            </a>
+            <a href="https://bodegagiol.com">
+                <img src="{{ url_for('static', filename='image/publi2.png') }}" alt="Imagen 2" class="imagen-clickeable">
+            </a>
+        </div>
+    </aside>
+    
+</div>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+    });
+</script>
+</body>
+</html>

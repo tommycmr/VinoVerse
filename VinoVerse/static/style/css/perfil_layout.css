@@ -1,0 +1,819 @@
+/* General Reset */
+body, h1, h2, h3, p, ul, li, a, button, form, input {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #5e0811;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+    font-size: 24px;
+    color: #ffffff;
+    font-weight: bold;
+    flex: 1; /* Logo a la izquierda */
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    justify-content: center; /* Botones de navegación al centro */
+    flex: 2; /* Se asegura que estén en el centro */
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #ffcccb;
+}
+
+.search-form, .logout-form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Esto mueve el buscador y botón de salir a la derecha */
+    flex: 0;
+}
+/* Barra de búsqueda y botones */
+.search-bar {
+    width: 250px;
+    padding: 8px;
+    font-size: 14px;
+    border: 2px solid #5e0811;
+    border-radius: 15px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus {
+    border-color: #73000d;
+}
+
+.search-form button, .logout-form button {
+    background-color: #3b0209;
+    color: #ffffff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: 10px;
+    margin-right: 25px;
+    
+}
+
+.search-form button:hover, .logout-form button:hover {
+    background-color: #5e0811;
+    transform: scale(1.1);
+}
+
+/* Fixed Sidebar Styling */
+.contenedores {
+    display: flex;
+    margin-top: 70px;
+    position: relative;
+}
+/* Contenedor principal */
+.contenedor {
+    display: flex;
+    margin-top: 90px; /* Ajusto la distancia para evitar que el navbar se solape con los sidebars */
+    position: relative;
+}
+
+/* Sidebar izquierdo */
+.izquierdo {
+    position: fixed;
+    top: 70px; /* Asegura que el sidebar no quede oculto debajo del navbar */
+    left: 0;
+    width: 20%;
+    height: calc(100vh - 70px); /* Ajusto la altura para que no se solape con el navbar */
+    overflow-y: auto;
+    background-color: #ececec;
+    padding: 20px;
+    border-right: 4px solid #000;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.izquierdo h2 {
+    font-size: 24px;
+    color: #5e0811;
+    margin-bottom: 10px;
+}
+
+.izquierdo p {
+    font-size: 14px;
+    color: #333;
+}
+
+.izquierdo .boton-editar-perfil {
+    background-color: #5e0811;
+    color: white;
+    padding: 12px 18px; /* Ajusto el tamaño del botón */
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.izquierdo .boton-editar-perfil:hover {
+    background-color: #ffcccb;
+}
+
+/* Contenido central */
+.central {
+    margin-left: 25%; /* Mantengo la separación de 25% para el contenedor central */
+    margin-right: 20%;
+    margin-top: 70px; /* Dejo un espacio para el navbar */
+    padding: 30px; /* Aumento el padding para dar más espacio al contenido */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Aumento el espacio entre las publicaciones */
+    width: 50%;
+}
+
+/* Sección de publicaciones */
+.central .nueva_publicacion form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Aumento la separación entre los elementos del formulario */
+    margin-bottom: 25px; /* Ajusto la separación entre la nueva publicación y el resto */
+}
+
+.central .nueva_publicacion input {
+    padding: 12px;
+    border: 2px solid #5e0811;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.central .nueva_publicacion button {
+    background-color: #5e0811;
+    color: white;
+    padding: 12px 20px; /* Aumento el tamaño del botón */
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.central .nueva_publicacion button:hover {
+    background-color: #ffcccb;
+}
+
+.central .publicacion {
+    background-color: #fefefe;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px; /* Aumento la separación entre publicaciones */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.central .publicacion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.central .cabecera h1 {
+    font-size: 24px;
+    color: #5e0811;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.central .cabecera .fecha {
+    font-size: 14px;
+    color: #666;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.central .publicacion p {
+    margin-top: 5px;
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.central .imagen-publicacion img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: transform 0.3s ease;
+}
+
+.central .imagen-publicacion img:hover {
+    transform: scale(1.2);
+}
+
+/* Sidebar derecho */
+.derecho {
+    position: fixed;
+    top: 0; /* Comienza desde arriba */
+    right: 0;
+    width: 20%;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #ececec;
+    padding: 15px;
+    border-left: 4px solid #000;
+    border-radius: 10px 0 0 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.derecho img {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.derecho img:hover {
+    transform: scale(1.05);
+}
+/* Botones de acción */
+.boton-editar, .boton-eliminar, .boton-guardar, .boton-guardado {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #5e0811;
+    font-size: 14px;
+    margin: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.boton-editar:hover, .boton-guardar:hover {
+    background-color: #ffcccb;
+}
+
+.boton-eliminar:hover {
+    background-color: #d9534f;
+}
+
+.boton-guardado {
+    background-color: #ccc; /* Color opuesto al del botón activo */
+    color: #666;
+    border: 1px solid #aaa;
+    cursor: not-allowed;
+    transition: none; /* Sin animación */
+}
+
+/* Formulario de guardar publicación */
+form {
+    display: inline;
+}
+
+.boton-mensaje,
+.seguir-boton,boton-amigo {
+    background-color: #3b0209;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.boton-pendiente{
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 8px;
+    background-color: #ccc; /* Color opuesto al del botón activo */
+    color: #666;
+    border: 1px solid #aaa;
+    cursor: not-allowed;
+    transition: none; /* Sin animación */
+}
+/* From Uiverse.io by SouravBandyopadhyay */ 
+.hourglassBackground {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    background-color: #987b54;
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+    z-index: 9999; 
+    border: 4px solid #333;
+}
+  
+  .hourglassContainer {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    width: 50px;
+    height: 70px;
+    -webkit-animation: hourglassRotate 2s ease-in 0s infinite;
+    animation: hourglassRotate 2s ease-in 0s infinite;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  
+  }
+  
+  .hourglassContainer div,
+  .hourglassContainer div:before,
+  .hourglassContainer div:after {
+    transform-style: preserve-3d;
+  }
+  
+  @-webkit-keyframes hourglassRotate {
+    0% {
+      transform: rotateX(0deg);
+    }
+  
+    50% {
+      transform: rotateX(180deg);
+    }
+  
+    100% {
+      transform: rotateX(180deg);
+    }
+  }
+  
+  @keyframes hourglassRotate {
+    0% {
+      transform: rotateX(0deg);
+    }
+  
+    50% {
+      transform: rotateX(180deg);
+    }
+  
+    100% {
+      transform: rotateX(180deg);
+    }
+  }
+  
+  .hourglassCapTop {
+    top: 0;
+  }
+  
+  .hourglassCapTop:before {
+    top: -25px;
+  }
+  
+  .hourglassCapTop:after {
+    top: -20px;
+  }
+  
+  .hourglassCapBottom {
+    bottom: 0;
+  }
+  
+  .hourglassCapBottom:before {
+    bottom: -25px;
+  }
+  
+  .hourglassCapBottom:after {
+    bottom: -20px;
+  }
+  
+  .hourglassGlassTop {
+    transform: rotateX(90deg);
+    position: absolute;
+    top: -16px;
+    left: 3px;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    background-color: #999999;
+  }
+  
+  .hourglassGlass {
+    perspective: 100px;
+    position: absolute;
+    top: 32px;
+    left: 20px;
+    width: 10px;
+    height: 6px;
+    background-color: #999999;
+    opacity: 0.5;
+  }
+  
+  .hourglassGlass:before,
+  .hourglassGlass:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background-color: #999999;
+    left: -17px;
+    width: 44px;
+    height: 28px;
+  }
+  
+  .hourglassGlass:before {
+    top: -27px;
+    border-radius: 0 0 25px 25px;
+  }
+  
+  .hourglassGlass:after {
+    bottom: -27px;
+    border-radius: 25px 25px 0 0;
+  }
+  
+  .hourglassCurves:before,
+  .hourglassCurves:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 32px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #333;
+    animation: hideCurves 2s ease-in 0s infinite;
+  }
+  
+  .hourglassCurves:before {
+    left: 15px;
+  }
+  
+  .hourglassCurves:after {
+    left: 29px;
+  }
+  
+  @-webkit-keyframes hideCurves {
+    0% {
+      opacity: 1;
+    }
+  
+    25% {
+      opacity: 0;
+    }
+  
+    30% {
+      opacity: 0;
+    }
+  
+    40% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes hideCurves {
+    0% {
+      opacity: 1;
+    }
+  
+    25% {
+      opacity: 0;
+    }
+  
+    30% {
+      opacity: 0;
+    }
+  
+    40% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .hourglassSandStream:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 24px;
+    width: 3px;
+    background-color: #73000d;
+    -webkit-animation: sandStream1 2s ease-in 0s infinite;
+    animation: sandStream1 2s ease-in 0s infinite;
+  }
+  
+  .hourglassSandStream:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 36px;
+    left: 19px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #73000d;
+    animation: sandStream2 2s ease-in 0s infinite;
+  }
+  
+  @-webkit-keyframes sandStream1 {
+    0% {
+      height: 0;
+      top: 35px;
+    }
+  
+    50% {
+      height: 0;
+      top: 45px;
+    }
+  
+    60% {
+      height: 35px;
+      top: 8px;
+    }
+  
+    85% {
+      height: 35px;
+      top: 8px;
+    }
+  
+    100% {
+      height: 0;
+      top: 8px;
+    }
+  }
+  
+  @keyframes sandStream1 {
+    0% {
+      height: 0;
+      top: 35px;
+    }
+  
+    50% {
+      height: 0;
+      top: 45px;
+    }
+  
+    60% {
+      height: 35px;
+      top: 8px;
+    }
+  
+    85% {
+      height: 35px;
+      top: 8px;
+    }
+  
+    100% {
+      height: 0;
+      top: 8px;
+    }
+  }
+  
+  @-webkit-keyframes sandStream2 {
+    0% {
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 0;
+    }
+  
+    51% {
+      opacity: 1;
+    }
+  
+    90% {
+      opacity: 1;
+    }
+  
+    91% {
+      opacity: 0;
+    }
+  
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes sandStream2 {
+    0% {
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 0;
+    }
+  
+    51% {
+      opacity: 1;
+    }
+  
+    90% {
+      opacity: 1;
+    }
+  
+    91% {
+      opacity: 0;
+    }
+  
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  .hourglassSand:before,
+  .hourglassSand:after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 6px;
+    background-color: #73000d;
+    perspective: 500px;
+  }
+  
+  .hourglassSand:before {
+    top: 8px;
+    width: 39px;
+    border-radius: 3px 3px 30px 30px;
+    animation: sandFillup 2s ease-in 0s infinite;
+  }
+  
+  .hourglassSand:after {
+    border-radius: 30px 30px 3px 3px;
+    animation: sandDeplete 2s ease-in 0s infinite;
+  }
+  
+  @-webkit-keyframes sandFillup {
+    0% {
+      opacity: 0;
+      height: 0;
+    }
+  
+    60% {
+      opacity: 1;
+      height: 0;
+    }
+  
+    100% {
+      opacity: 1;
+      height: 17px;
+    }
+  }
+  
+  @keyframes sandFillup {
+    0% {
+      opacity: 0;
+      height: 0;
+    }
+  
+    60% {
+      opacity: 1;
+      height: 0;
+    }
+  
+    100% {
+      opacity: 1;
+      height: 17px;
+    }
+  }
+  
+  @-webkit-keyframes sandDeplete {
+    0% {
+      opacity: 0;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    1% {
+      opacity: 1;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    24% {
+      opacity: 1;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    25% {
+      opacity: 1;
+      top: 41px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    50% {
+      opacity: 1;
+      top: 41px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    90% {
+      opacity: 1;
+      top: 41px;
+      height: 0;
+      width: 10px;
+      left: 20px;
+    }
+  }
+  
+  @keyframes sandDeplete {
+    0% {
+      opacity: 0;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    1% {
+      opacity: 1;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    24% {
+      opacity: 1;
+      top: 45px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    25% {
+      opacity: 1;
+      top: 41px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    50% {
+      opacity: 1;
+      top: 41px;
+      height: 17px;
+      width: 38px;
+      left: 6px;
+    }
+  
+    90% {
+      opacity: 1;
+      top: 41px;
+      height: 0;
+      width: 10px;
+      left: 20px;
+    }
+  }
+  
